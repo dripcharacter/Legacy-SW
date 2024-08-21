@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <string>
+#include <cmath>
 
 #include "XEP.hpp"
 #include "Data.hpp"
@@ -36,15 +37,15 @@ void xep_app_init(XEP* xep)
     xep->x4driver_init();
 
     //Setting default values for XEP
-    int dac_min = 949;
-    int dac_max = 1100;
-    int iteration = 32;
-    int pps = 150;
-    int fps = 17;
-    float offset = 0.18;
-    float fa1 = 0.4;
-    float fa2 = 5.0;
-    int dc = 0;
+    int dac_min = 950;
+    int dac_max = 1150;
+    int iteration = 64;
+    int pps = 56;
+    int fps = 20;
+    float offset = 0;
+    float fa1 = 23.328e9;
+    float fa2 = 7.29e9;
+    int dc = 1;
 
     if (configure == 'y') {
         //Getting user input for configuration of xep
@@ -108,13 +109,28 @@ int read_frame(const std::string & device_name)
         if (xep.read_message_data_float(&test)) {
             return handle_error("read_message_data_float failed");
         }
-        std::vector<float> outData = test.data;
-        int sz = outData.size();
-        for (int x = 0; x < sz; ++x) {
-            //printing out unreadable RF-data
-            std::cout << test.data[x] << " ";
-        }
-        std::cout << '\n';
+        std::vector<float> data_vec = test.get_data();
+        printf("this is the size: %lld\n", data_vec.size());
+        printf("i_channel===========================================================\n");
+            for (size_t i=0; i<data_vec.size()/2; i++) {
+                printf("%f ", data_vec[i]);
+            }
+            printf("\n");
+            printf("q_channel===========================================================\n");
+            for (size_t i=0; i<data_vec.size()/2; i++) {
+                printf("%f ", data_vec[i+data_vec.size()/2]);
+            }
+            printf("\n");
+            printf("amplitude===========================================================\n");
+            for (size_t i=0; i<data_vec.size()/2; i++) {
+                printf("%f ", sqrt(pow(data_vec[i+data_vec.size()/2],2)+pow(data_vec[i],2)));
+            }
+            printf("\n");
+            printf("phase===========================================================\n");
+            for (size_t i=0; i<data_vec.size()/2; i++) {
+                printf("%f ", atan2(data_vec[i+data_vec.size()/2], data_vec[i]));
+            }
+            printf("\n");
     }
     return 0;
 }

@@ -1,0 +1,33 @@
+1.259756 : GetOverlappedResult return error: 스레드 종료 또는 응용 프로그램 요청 때문에 I/O 작업이 취소되었습니다.
+
+1.264281 : do_single_read failed
+
+1.264281 : io_read() returned negative: 
+
+1.265283 : Reader is bailing out
+
+2.011958 : Timeout waiting for response
+2.013472 : call to WriteFile failed -- closing file -- 장치가 명령을 인식하지 않습니다.
+
+2.014483 : Failed to write all bytes to module, expected bytes written: 13, actual bytes written: 0
+2.014483 : call to WriteFile failed -- closing file -- 핸들이 잘못되었습니다.
+
+2.015480 : Failed to write all bytes to module, expected bytes written: 13, actual bytes written: 0
+2.026052 : call to WriteFile failed -- closing file -- 핸들이 잘못되었습니다.
+
+2.026052 : Failed to write all bytes to module, expected bytes written: 13, actual bytes written: 0
+2.026052 : call to WriteFile failed -- closing file -- 핸들이 잘못되었습니다.
+
+2.027056 : Failed to write all bytes to module, expected bytes written: 13, actual bytes written: 0
+2.027056 : call to WriteFile failed -- closing file -- 핸들이 잘못되었습니다.
+
+2.027056 : Failed to write all bytes to module, expected bytes written: 13, actual bytes written: 0
+2.027056 : call to WriteFile failed -- closing file -- 핸들이 잘못되었습니다.
+
+2.029066 : Failed to write all bytes to module, expected bytes written: 13, actual bytes written: 0
+2.030059 : call to WriteFile failed -- closing file -- 핸들이 잘못되었습니다.
+
+2.030059 : Failed to write all bytes to module, expected bytes written: 17, actual bytes written: 0
+2.031064 : call to WriteFile failed -- closing file -- 핸들이 잘못되었습니다.
+
+2.031064 : Failed to write all bytes to module, expected bytes written: 10, actual bytes written: 0

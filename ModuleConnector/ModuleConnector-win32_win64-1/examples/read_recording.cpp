@@ -34,7 +34,7 @@ int read_recording(const std::string &meta_filename)
     }
 
     // Only interested in 'BasebandApDataType' and 'SleepDataType'
-    reader.set_filter(BasebandApDataType | SleepDataType);
+    // reader.set_filter(BasebandApDataType | SleepDataType);
 
     // Read all records
     while (!reader.at_end()) {
@@ -59,7 +59,7 @@ int read_recording(const std::string &meta_filename)
             process_sleep(record);
             break;
         default:
-            assert(false);
+            // assert(false);
             break;
         }
     }
@@ -73,7 +73,9 @@ int read_recording(const std::string &meta_filename)
 
 //! [Typical usage with raw buffer]
     const uint32_t max_record_size = reader.get_max_record_size();
+    printf("This is size: %d\n", max_record_size);
     std::unique_ptr<uint8_t[]> buffer(new uint8_t[max_record_size]);
+    printf("boolean: %d\n", reader.at_end());
 
     while (!reader.at_end()) {
         uint32_t record_size;
@@ -85,6 +87,15 @@ int read_recording(const std::string &meta_filename)
             std::cout << "ERROR: failed to read record" << std::endl;
             return 1;
         }
+        printf("record size: %d\n", record_size);
+        printf("data_type: %d\n", data_type);
+        printf("epoch: %lld\n", epoch);
+        printf("is_user_header: %d\n", is_user_header);
+        for (size_t i=0; i< record_size; i++) {
+            printf("%u ", buffer[i]);
+        }
+        printf("\n");
+
 
         // ...
     }
