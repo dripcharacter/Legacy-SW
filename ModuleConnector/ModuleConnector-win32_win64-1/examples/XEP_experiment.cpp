@@ -7,6 +7,10 @@
 #include <string>
 #include <cmath>
 #include <fstream>
+#include <direct.h>
+#include <chrono>
+#include <iomanip>
+#include <sstream>
 
 #include "Data.hpp"
 #include "ModuleConnector.hpp"
@@ -39,9 +43,9 @@ void xep_app_init(XEP* xep)
     //Setting default values for XEP
     int dac_min = 949;
     int dac_max = 1100;
-    int iteration = 32;
-    int pps = 150;
-    int fps = 17;
+    int iteration = 64;
+    int pps = 60;
+    int fps = 25;
     float offset = 0.18;
     float fa1 = -0.4372839331626892;
     float fa2 = 9.18205738067627;
@@ -71,16 +75,33 @@ void handle_sigint(int num)
     {
         std::cout<< "start making csv"<<std::endl;
 
+        auto now = std::chrono::system_clock::now();
+        std::time_t now_time = std::chrono::system_clock::to_time_t(now);
+
+        // yy_mm_dd_hh_mm_ss 형식으로 시간 문자열 만들기
+        std::tm* tm_ptr = std::localtime(&now_time);
+        std::stringstream ss;
+        ss << std::put_time(tm_ptr, "%y_%m_%d_%H_%M_%S");
+        std::string dir_name = ss.str();
+
+        // 디렉터리 생성 (Windows)
+        if (_mkdir(dir_name.c_str()) == 0) {
+            std::cout << "mkdir success: " << dir_name << std::endl;
+        } else {
+            std::cerr << "mkdir fail" << std::endl;
+        }
+        
         // 파일 저장 경로
-        std::string i_channel_file = "i_channel_data.csv";
-        std::string q_channel_file = "q_channel_data.csv";
-        std::string amplitude_file = "amplitude_data.csv";
-        std::string phase_file = "phase_data.csv";
+        std::string i_channel_file = dir_name+"/i_channel_data.csv";
+        std::string q_channel_file = dir_name+"/q_channel_data.csv";
+        std::string amplitude_file = dir_name+"/amplitude_data.csv";
+        std::string phase_file = dir_name+"/phase_data.csv";
 
         // 각각의 데이터 벡터를 CSV 파일로 저장
         auto save_to_csv = [](const std::string &filename, const std::vector<std::vector<float>> &data) {
             std::ofstream file(filename);
             if (file.is_open()) {
+                file << std::fixed << std::setprecision(15);
                 for (const auto &row : data) {
                     for (size_t i = 0; i < row.size(); ++i) {
                         file << row[i];
@@ -101,7 +122,16 @@ void handle_sigint(int num)
         save_to_csv(amplitude_file, amplitude_data);
         save_to_csv(phase_file, phase_data);
 
+        std::cout << "==========================================================================================" << std::endl;
+        std::cout << "i_data len: " << i_channel_data.size() << std::endl;
+        std::cout << "q_data len: " << q_channel_data.size() << std::endl;
+        std::cout << "amplitude_data len: " << amplitude_data.size() << std::endl;
+        std::cout << "phase_data len: " << phase_data.size() << std::endl;
+        std::cout << "==========================================================================================" << std::endl;
+
         std::cout << "Data saved to CSV files." << std::endl;
+
+        exit(0);
     }
 }
 
@@ -232,16 +262,29 @@ int monitoring(const std::string &device_name)
         amplitude_data.push_back(amplitude);
         phase_data.push_back(phase);
         printf("this is the size: %lld\n", data_vec.size());
-        std::cout << "vector size is " << amplitude_data.size() << " * " << amplitude_data[0].size() << std::endl;
-        std::cout << "amplitude vector" << std::endl;
-        for (size_t i=0; i<amplitude_data[amplitude_data.size()-1].size(); i++)
-            std::cout << amplitude_data[amplitude_data.size()-1][i] << " ";
-        std::cout << std::endl;
-        std::cout << "phase vector" << std::endl;
-        for (size_t i=0; i<phase_data[phase_data.size()-1].size(); i++)
-            std::cout << phase_data[phase_data.size()-1][i] << " ";
-        std::cout << std::endl;
-        
+        // std::cout << "vector size is " << amplitude_data.size() << " * " << amplitude_data[0].size() << std::endl;
+        // std::cout << "i_channel_data vector" << std::endl;
+        // for (size_t i=0; i<i_channel_data[i_channel_data.size()-1].size(); i++)
+        //     std::cout << i_channel_data[i_channel_data.size()-1][i] << " ";
+        // std::cout << std::endl;
+        // std::cout << "q_channel_data vector" << std::endl;
+        // for (size_t i=0; i<q_channel_data[q_channel_data.size()-1].size(); i++)
+        //     std::cout << q_channel_data[q_channel_data.size()-1][i] << " ";
+        // std::cout << std::endl;
+        // std::cout << "amplitude vector" << std::endl;
+        // for (size_t i=0; i<amplitude_data[amplitude_data.size()-1].size(); i++)
+        //     std::cout << amplitude_data[amplitude_data.size()-1][i] << " ";
+        // std::cout << std::endl;
+        // std::cout << "phase vector" << std::endl;
+        // for (size_t i=0; i<phase_data[phase_data.size()-1].size(); i++)
+        //     std::cout << phase_data[phase_data.size()-1][i] << " ";
+        // std::cout << std::endl;
+        std::cout << "==========================================================================================" << std::endl;
+        std::cout << "i_data len: " << i_channel_data.size() << std::endl;
+        std::cout << "q_data len: " << q_channel_data.size() << std::endl;
+        std::cout << "amplitude_data len: " << amplitude_data.size() << std::endl;
+        std::cout << "phase_data len: " << phase_data.size() << std::endl;
+        std::cout << "==========================================================================================" << std::endl;
     }
     return 0;
 }
